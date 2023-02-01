@@ -18,7 +18,7 @@
         ...
       }: {
         options.devenv = lib.mkOption {
-          type = lib.types.submoduleWith {
+          type = lib.types.attrsOf (lib.types.submoduleWith {
             modules = [
               (devenv.modules + /top-level.nix)
               ({
@@ -41,24 +41,19 @@
                 _module.args = {inherit pre-commit-hooks;} // inputs;
               }
               ({...}: {
-                options.devShellAttribute = lib.mkOption {
-                  description = lib.mdDoc ''
-                    The attribute name under `devShells` where the devenv shell
-                    will appear.
-
-                    Set to `null` to disable.
+                options.enable = lib.mkOption {
+                  type = lib.types.bool;
+                  default = true;
+                  description = ''
+                    Whether to enable this  devShell.
                   '';
-                  type = lib.types.nullOr lib.types.str;
-                  default = "default";
                 };
               })
             ];
-          };
+          });
           default = {};
         };
-        config.devShells = lib.mkIf (!builtins.isNull config.devenv.devShellAttribute) {
-          ${config.devenv.devShellAttribute} = config.devenv.shell;
-        };
+        config.devShells = lib.mapAttrs (name: devenv: devenv.shell) (lib.filterAttrs (name: devenv: devenv.enable) config.devenv);
       };
     };
     templates.simple = {
