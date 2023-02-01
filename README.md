@@ -21,7 +21,7 @@ To use, simply set `perSystem.devenv` to your [Devenv] module.
       systems = ["x86_64-linux"];
       imports = [inputs.devenv-parts.flakeModules.default];
       perSystem = perSystemInputs @ {...}: {
-        devenv = devenvInputs @ {...}: {
+        devenv.default = devenvInputs @ {...}: {
           services.postgres.enable = true;
           languages.rust.enable = true;
         };
