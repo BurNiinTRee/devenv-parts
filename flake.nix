@@ -5,6 +5,7 @@
   };
 
   outputs = {
+    self,
     pre-commit-hooks,
     devenv,
     ...
@@ -46,5 +47,10 @@
         config.devShells.default = config.devenv.shell;
       };
     };
+    templates.simple = {
+      path = ./examples/simple;
+      description = "simple devenv-parts flake";
+    };
+    templates.default = self.templates.simple;
   };
 }
