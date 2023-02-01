@@ -24,11 +24,27 @@
             devenv.lib.mkConfig
             {
               inherit pkgs inputs;
-              modules = [mod];
+              modules = [
+                mod
+                ({...}: {
+                  options.devShellAttribute = lib.mkOption {
+                    description = lib.mdDoc ''
+                      The attribute name under `devShells` where the devenv shell
+                      will appear.
+
+                      Set to `null` to disable.
+                    '';
+                    type = lib.types.nullOr lib.types.str;
+                    default = "default";
+                  };
+                })
+              ];
             };
           default = {};
         };
-        config.devShells.default = config.devenv.shell;
+        config.devShells = lib.mkIf (!builtins.isNull config.devenv.devShellAttribute) {
+          ${config.devenv.devShellAttribute} = config.devenv.shell;
+        };
       };
     };
     templates.simple = {
