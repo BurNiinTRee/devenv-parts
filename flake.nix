@@ -40,11 +40,25 @@
               {
                 _module.args = {inherit pre-commit-hooks;} // inputs;
               }
+              ({...}: {
+                options.devShellAttribute = lib.mkOption {
+                  description = lib.mdDoc ''
+                    The attribute name under `devShells` where the devenv shell
+                    will appear.
+
+                    Set to `null` to disable.
+                  '';
+                  type = lib.types.nullOr lib.types.str;
+                  default = "default";
+                };
+              })
             ];
           };
           default = {};
         };
-        config.devShells.default = config.devenv.shell;
+        config.devShells = lib.mkIf (!builtins.isNull config.devenv.devShellAttribute) {
+          ${config.devenv.devShellAttribute} = config.devenv.shell;
+        };
       };
     };
     templates.simple = {
