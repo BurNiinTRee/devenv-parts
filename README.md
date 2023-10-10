@@ -1,3 +1,8 @@
+# DEPRECATION NOTICE
+A similar module is now provided upstream in [Devenv].
+Use that instead.
+
+
 # Devenv-Parts
 
 This flake exposes a [Flake-Parts] module to easily use a [Devenv] shell.
